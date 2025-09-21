@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Get the base URL from environment variables or use a default
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
 // Create an axios instance
 const api = axios.create({
@@ -88,5 +88,13 @@ export const getUserApplications = (userId: string) =>
 
 export const getApplicationDetails = (applicationId: string) =>
   api.get(`/applications/${applicationId}`);
+
+// AI-powered candidate search
+export const searchAICandidates = (query: string) => 
+  api.post('/ai-candidates/search', { query });
+
+// AI Chat Assistant
+export const sendChatMessage = (message: string, conversationHistory: any[] = []) => 
+  api.post('/ai-chat/assistant', { message, conversationHistory });
 
 // Add more API endpoints as needed

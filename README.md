@@ -5,11 +5,14 @@ A modern job recruitment platform that connects recruiters with job seekers, fea
 ## Features
 
 - Job posting and management for recruiters
-- Candidate search and filtering
+- **AI-Powered Candidate Search** - Intelligent candidate matching using OpenAI GPT models
+- **AI Chat Assistant** - Free AI-powered chat assistant for intelligent conversation and context understanding
+- Real-time candidate analysis with relevance scoring and insights
 - User authentication and profiles
 - Interactive dashboards for both applicants and recruiters
 - Job application tracking
 - Profile management with professional links (GitHub, LinkedIn, LeetCode)
+- Smart Hire API with advanced candidate ranking and analysis
 
 ## Technology Stack
 
@@ -26,6 +29,7 @@ A modern job recruitment platform that connects recruiters with job seekers, fea
 - **File Upload**: Multer
 - **API Client**: Axios
 - **Form Validation**: Zod
+- **AI Integration**: OpenAI GPT-3.5-turbo for candidate analysis, Hugging Face models for chat assistant
 
 ## Project Structure
 
@@ -163,6 +167,94 @@ bun dev
 
 The frontend will be available at `http://localhost:5173`
 
+## AI Configuration (Optional)
+
+The platform includes AI-powered features using Ollama with DeepSeek-R1 model and OpenAI's GPT models:
+
+### Ollama Setup (Required for AI Chat Assistant)
+
+1. **Install Ollama**:
+   ```bash
+   # macOS
+   brew install ollama
+   
+   # Linux
+   curl -fsSL https://ollama.ai/install.sh | sh
+   ```
+
+2. **Start Ollama Service**:
+   ```bash
+   # macOS
+   brew services start ollama
+   
+   # Linux
+   ollama serve
+   ```
+
+3. **Download Llama3 Model**:
+   ```bash
+   ollama pull llama3
+   ```
+
+4. **Verify Installation**:
+   ```bash
+   ollama list
+   ```
+
+### 1. AI Chat Assistant (Free - Ollama Llama3 Integration)
+
+The AI Chat Assistant uses Ollama with the Llama3 model for intelligent, context-aware responses. It provides:
+- **Advanced AI reasoning** with the Llama3 model (4.7GB local model)
+- **Clean, professional responses** with automatic removal of internal reasoning tags
+- **Context-aware conversation understanding** with conversation history tracking
+- **Technology-specific guidance** for React, Python, DevOps, Mobile, Data Science, Blockchain, Security
+- **Recruitment expertise** with best practices for technical interviews and candidate screening
+- **Experience level recognition** (junior, mid-level, senior, lead)
+- **Conversation context analysis** that remembers previous interactions
+- **No API key required** - runs completely locally with Ollama
+- **Professional responses** tailored for recruitment and hiring scenarios
+
+### 2. Enhanced AI Analysis (Optional - Requires API Keys)
+
+For enhanced AI analysis, you can configure API keys:
+
+#### OpenAI API Key (for advanced candidate analysis):
+1. **Get an OpenAI API Key**:
+   - Visit [OpenAI Platform](https://platform.openai.com/api-keys)
+   - Create a new API key
+
+#### Hugging Face API Key (for enhanced chat responses):
+1. **Get a Hugging Face API Key**:
+   - Visit [Hugging Face Settings](https://huggingface.co/settings/tokens)
+   - Create a new access token
+
+2. **Configure Environment Variables**:
+   Create a `.env` file in the `backend/` directory:
+   ```bash
+   # Database Configuration
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_NAME=hire_sentiment
+   DB_USER=your_db_user
+   DB_PASSWORD=your_db_password
+
+   # AI Configuration (Optional - for enhanced AI analysis)
+   OPENAI_API_KEY=your_openai_api_key_here
+   HUGGINGFACE_API_KEY=your_huggingface_api_key_here
+
+   # Server Configuration
+   PORT=5001
+   NODE_ENV=development
+   ```
+
+3. **Restart the Backend**:
+   ```bash
+   cd backend
+   npm run dev
+   ```
+
+**Note**: The AI Chat Assistant and AI candidate search both work with Llama3 (no API keys required) for intelligent analysis. The system provides sophisticated AI-powered candidate ranking and analysis using the local Llama3 model. OpenAI API keys are optional for additional enhancements.
+
 ## API Documentation
 
 ### Authentication Endpoints
@@ -213,10 +305,40 @@ The frontend will be available at `http://localhost:5173`
 
 ### Smart Hire API
 
-- **POST /api/smart-hire/search** - Search for candidates using AI
+- **POST /api/smart-hire/search** - Basic candidate search with keyword matching
   - Headers: `Authorization: Bearer {token}`
   - Body: `{ query }`
-  - Response: Ranked candidates with analysis
+  - Response: Ranked candidate list with basic analysis
+
+- **POST /api/ai-candidates/search** - AI-powered candidate search with advanced analysis
+  - Headers: `Authorization: Bearer {token}`
+  - Body: `{ query }`
+  - Response: AI-analyzed candidates with relevance scores, strengths, concerns, and insights
+  - Features: 
+    - **Llama3 integration** for intelligent candidate analysis (no API key required)
+    - **Hybrid AI approach** combining Llama3 insights with enhanced keyword matching
+    - **Smart ranking algorithm** with relevance scoring (0-100)
+    - **Detailed match reasoning** for each candidate
+    - **Strengths and concerns analysis** for informed hiring decisions
+    - **Comprehensive insights** about the candidate pool
+    - **Real-time database integration** with PostgreSQL
+
+### AI Chat Assistant API
+
+- **POST /api/ai-chat/assistant** - AI-powered chat assistant for intelligent conversation
+  - Headers: `Authorization: Bearer {token}`
+  - Body: `{ message, conversationHistory? }`
+  - Response: AI-generated response with context understanding
+  - Features: 
+    - **Ollama Llama3 integration** with advanced AI reasoning (4.7GB local model)
+    - **Clean, professional responses** with automatic removal of internal reasoning tags
+    - **Technology-specific guidance** for React, Python, DevOps, Mobile, Data Science, Blockchain, Security
+    - **Context-aware conversation understanding** with conversation history tracking
+    - **Recruitment expertise** with technical interview best practices and candidate screening
+    - **Experience level recognition** (junior, mid-level, senior, lead)
+    - **Integration with candidate search** functionality
+    - **No API key required** - runs completely locally with Ollama
+    - **Professional responses** tailored for recruitment scenarios
 
 ## Database Structure
 

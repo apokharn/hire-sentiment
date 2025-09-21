@@ -1,15 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { mockJobListings } from "@/data/mockData";
+import { getJobs } from "@/lib/api";
 import { PlusCircle, Search, Users, Briefcase, TrendingUp, Award } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const RecruiterDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoading(true);
+        const response = await getJobs();
+        if (response.data.success) {
+          setJobs(response.data.jobs);
+        } else {
+          setError('Failed to fetch jobs');
+        }
+      } catch (err) {
+        console.error('Error fetching jobs:', err);
+        setError('Failed to fetch jobs');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
 
   if (!user || user.role !== "recruiter") {
     return (
@@ -19,12 +43,12 @@ const RecruiterDashboard = () => {
     );
   }
 
-  // Mock analytics data
+  // Analytics data based on real jobs
   const dashboardStats = {
-    totalJobs: mockJobListings.length,
-    activeJobs: mockJobListings.filter(job => !job.closed).length,
-    totalApplicants: 87,
-    newApplications: 12,
+    totalJobs: jobs.length,
+    activeJobs: jobs.filter(job => !job.closed).length,
+    totalApplicants: 87, // This would come from applications API
+    newApplications: 12, // This would come from applications API
   };
 
   // Mock applicant demographics
@@ -233,8 +257,16 @@ const RecruiterDashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {mockJobListings.length > 0 ? (
-              mockJobListings.map((job) => (
+            {loading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="text-muted-foreground">Loading jobs...</div>
+              </div>
+            ) : error ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="text-red-500">Error: {error}</div>
+              </div>
+            ) : jobs.length > 0 ? (
+              jobs.map((job) => (
                 <div key={job.id} className="border rounded-lg p-4 hover:bg-accent/30 transition-colors">
                   <div className="flex flex-col md:flex-row justify-between md:items-center gap-3">
                     <div>
@@ -246,15 +278,18 @@ const RecruiterDashboard = () => {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground">{job.company} • {job.location}</p>
+                      <p className="text-sm text-muted-foreground">{job.company} • {job.location || 'Location not specified'}</p>
                       <p className="text-sm mt-2 line-clamp-1">{job.description}</p>
                       
                       <div className="flex items-center gap-3 mt-2">
                         <Badge variant="outline" className="bg-blue-50">
-                          <Users className="h-3 w-3 mr-1" /> 24 Applicants
+                          <Users className="h-3 w-3 mr-1" /> 0 Applicants
                         </Badge>
                         <Badge variant="outline" className="bg-green-50">
-                          <Award className="h-3 w-3 mr-1" /> 12 Matches
+                          <Award className="h-3 w-3 mr-1" /> 0 Matches
+                        </Badge>
+                        <Badge variant="outline" className="bg-gray-50">
+                          Posted: {new Date(job.created_at).toLocaleDateString()}
                         </Badge>
                       </div>
                     </div>
@@ -262,7 +297,15 @@ const RecruiterDashboard = () => {
                       <Button variant="outline" size="sm" onClick={() => navigate(`/recruiter/job/${job.id}`)}>
                         View Details
                       </Button>
-                      <Button variant="secondary" size="sm" onClick={() => navigate("/recruiter/find-candidates")}>
+                      <Button 
+                        variant="secondary" 
+                        size="sm" 
+                        onClick={() => {
+                          const jobDescription = `Job Title: ${job.title}\nCompany: ${job.company}\nLocation: ${job.location || 'Not specified'}\nDescription: ${job.description}\nRequirements: ${job.requirements || 'Not specified'}\nSkills: ${job.skills || 'Not specified'}`;
+                          const query = `Give me top 5 candidates for this job description: ${job.description}`;
+                          navigate(`/recruiter/find-candidates?query=${encodeURIComponent(query)}`);
+                        }}
+                      >
                         <Search className="h-3 w-3 mr-1" />
                         Find Matches
                       </Button>
