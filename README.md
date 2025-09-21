@@ -5,8 +5,8 @@ A modern job recruitment platform that connects recruiters with job seekers, fea
 ## Features
 
 - Job posting and management for recruiters
-- **AI-Powered Candidate Search** - Intelligent candidate matching using OpenAI GPT models
-- **AI Chat Assistant** - Free AI-powered chat assistant for intelligent conversation and context understanding
+- **AI-Powered Candidate Search** - Intelligent candidate matching using Ollama Llama3
+- **AI Chat Assistant** - Free AI-powered chat assistant using Ollama Llama3 for intelligent conversation
 - Real-time candidate analysis with relevance scoring and insights
 - User authentication and profiles
 - Interactive dashboards for both applicants and recruiters
@@ -24,12 +24,12 @@ A modern job recruitment platform that connects recruiters with job seekers, fea
 - **Charts**: Recharts
 - **Icons**: Lucide Icons
 - **Backend**: Express.js
-- **Database**: PostgreSQL with pgvector extension
+- **Database**: PostgreSQL
 - **Authentication**: JWT
 - **File Upload**: Multer
 - **API Client**: Axios
 - **Form Validation**: Zod
-- **AI Integration**: OpenAI GPT-3.5-turbo for candidate analysis, Hugging Face models for chat assistant
+- **AI Integration**: Ollama Llama3 for both candidate analysis and chat assistant
 
 ## Project Structure
 
@@ -77,7 +77,7 @@ docker-compose up -d
 ```
 
 This will start:
-- PostgreSQL with pgvector extension on port 5432
+- PostgreSQL on port 5432
 - Adminer (database management UI) on http://localhost:8082
 
 3. Run database migrations:
@@ -102,10 +102,10 @@ node run-migration.js migrations/filename.sql
 ```
 
 3. **Available migration files:**
-- `tables.sql` - Creates the base tables structure
-- `add_missing_job_columns.sql` - Adds additional columns to jobs table
-- `profile_analysis.sql` - Adds tables for profile analysis
-- `seed_jobs.sql` - Adds sample job data
+- `001_tables.sql` - Creates the base tables structure
+- `002_add_missing_job_columns.sql` - Adds additional columns to jobs table
+- `003_profile_analysis.sql` - Adds tables for profile analysis
+- `004_seed_jobs.sql` - Adds sample job data
 
 4. **Check schema status:**
 ```bash
@@ -142,7 +142,7 @@ npm install
 npm run dev
 ```
 
-The backend API will be available at `http://localhost:5000`
+The backend API will be available at `http://localhost:5001`
 
 ### Starting the Frontend
 
@@ -167,11 +167,11 @@ bun dev
 
 The frontend will be available at `http://localhost:5173`
 
-## AI Configuration (Optional)
+## AI Configuration
 
-The platform includes AI-powered features using Ollama with DeepSeek-R1 model and OpenAI's GPT models:
+The platform uses Ollama with Llama3 for all AI-powered features. No API keys are required.
 
-### Ollama Setup (Required for AI Chat Assistant)
+### Ollama Setup (Required for AI Features)
 
 1. **Install Ollama**:
    ```bash
@@ -201,59 +201,23 @@ The platform includes AI-powered features using Ollama with DeepSeek-R1 model an
    ollama list
    ```
 
-### 1. AI Chat Assistant (Free - Ollama Llama3 Integration)
+### AI Features
 
-The AI Chat Assistant uses Ollama with the Llama3 model for intelligent, context-aware responses. It provides:
-- **Advanced AI reasoning** with the Llama3 model (4.7GB local model)
-- **Clean, professional responses** with automatic removal of internal reasoning tags
-- **Context-aware conversation understanding** with conversation history tracking
+The platform provides two main AI-powered features using Ollama Llama3:
+
+#### 1. AI Chat Assistant
+- **Intelligent conversation** with context understanding
 - **Technology-specific guidance** for React, Python, DevOps, Mobile, Data Science, Blockchain, Security
-- **Recruitment expertise** with best practices for technical interviews and candidate screening
+- **Recruitment expertise** with best practices for technical interviews
 - **Experience level recognition** (junior, mid-level, senior, lead)
-- **Conversation context analysis** that remembers previous interactions
-- **No API key required** - runs completely locally with Ollama
-- **Professional responses** tailored for recruitment and hiring scenarios
+- **No API key required** - runs completely locally
 
-### 2. Enhanced AI Analysis (Optional - Requires API Keys)
-
-For enhanced AI analysis, you can configure API keys:
-
-#### OpenAI API Key (for advanced candidate analysis):
-1. **Get an OpenAI API Key**:
-   - Visit [OpenAI Platform](https://platform.openai.com/api-keys)
-   - Create a new API key
-
-#### Hugging Face API Key (for enhanced chat responses):
-1. **Get a Hugging Face API Key**:
-   - Visit [Hugging Face Settings](https://huggingface.co/settings/tokens)
-   - Create a new access token
-
-2. **Configure Environment Variables**:
-   Create a `.env` file in the `backend/` directory:
-   ```bash
-   # Database Configuration
-   DB_HOST=localhost
-   DB_PORT=5432
-   DB_NAME=hire_sentiment
-   DB_USER=your_db_user
-   DB_PASSWORD=your_db_password
-
-   # AI Configuration (Optional - for enhanced AI analysis)
-   OPENAI_API_KEY=your_openai_api_key_here
-   HUGGINGFACE_API_KEY=your_huggingface_api_key_here
-
-   # Server Configuration
-   PORT=5001
-   NODE_ENV=development
-   ```
-
-3. **Restart the Backend**:
-   ```bash
-   cd backend
-   npm run dev
-   ```
-
-**Note**: The AI Chat Assistant and AI candidate search both work with Llama3 (no API keys required) for intelligent analysis. The system provides sophisticated AI-powered candidate ranking and analysis using the local Llama3 model. OpenAI API keys are optional for additional enhancements.
+#### 2. AI-Powered Candidate Search
+- **Intelligent candidate matching** with relevance scoring
+- **Detailed analysis** with strengths and concerns for each candidate
+- **Smart ranking algorithm** with match categorization (excellent, strong, moderate, limited)
+- **Real-time database integration** with PostgreSQL
+- **No API key required** - runs completely locally
 
 ## API Documentation
 
@@ -316,11 +280,10 @@ For enhanced AI analysis, you can configure API keys:
   - Response: AI-analyzed candidates with relevance scores, strengths, concerns, and insights
   - Features: 
     - **Llama3 integration** for intelligent candidate analysis (no API key required)
-    - **Hybrid AI approach** combining Llama3 insights with enhanced keyword matching
     - **Smart ranking algorithm** with relevance scoring (0-100)
+    - **Match categorization** (excellent, strong, moderate, limited matches)
     - **Detailed match reasoning** for each candidate
     - **Strengths and concerns analysis** for informed hiring decisions
-    - **Comprehensive insights** about the candidate pool
     - **Real-time database integration** with PostgreSQL
 
 ### AI Chat Assistant API
@@ -330,7 +293,7 @@ For enhanced AI analysis, you can configure API keys:
   - Body: `{ message, conversationHistory? }`
   - Response: AI-generated response with context understanding
   - Features: 
-    - **Ollama Llama3 integration** with advanced AI reasoning (4.7GB local model)
+    - **Ollama Llama3 integration** with advanced AI reasoning
     - **Clean, professional responses** with automatic removal of internal reasoning tags
     - **Technology-specific guidance** for React, Python, DevOps, Mobile, Data Science, Blockchain, Security
     - **Context-aware conversation understanding** with conversation history tracking
@@ -338,11 +301,10 @@ For enhanced AI analysis, you can configure API keys:
     - **Experience level recognition** (junior, mid-level, senior, lead)
     - **Integration with candidate search** functionality
     - **No API key required** - runs completely locally with Ollama
-    - **Professional responses** tailored for recruitment scenarios
 
 ## Database Structure
 
-The database uses PostgreSQL with pgvector extension for AI embeddings and includes the following tables:
+The database uses PostgreSQL and includes the following tables:
 
 ### Users Table
 ```sql
@@ -364,7 +326,6 @@ CREATE TABLE applicant_profiles (
   leetcode_url VARCHAR(255),
   linkedin_url VARCHAR(255),
   profile_image_url VARCHAR(255),
-  embedding VECTOR(1536),  -- For OpenAI embeddings
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
