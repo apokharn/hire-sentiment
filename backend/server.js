@@ -720,7 +720,7 @@ function createFallbackAnalysis(query, candidates, requestedCount = 5) {
   
   // Debug: Log the top candidates with their scores
   console.log('Top candidates after ranking:');
-  rankedCandidates.slice(0, 5).forEach((candidate, index) => {
+  rankedCandidates.slice(0, requestedCount).forEach((candidate, index) => {
     console.log(`${index + 1}. ${candidate.email} - Score: ${candidate.relevance_score} - ${candidate.match_reasoning}`);
   });
   

@@ -105,6 +105,10 @@ const FindCandidates = () => {
         setMessages(prev => [...prev, userMessage]);
         setLoading(true);
         
+        // Clear previous results before new search
+        setResults([]);
+        setAiInsights("");
+        
         try {
           // Send chat message first
           const chatResponse = await sendChatMessage(jobQuery, []);
@@ -175,6 +179,10 @@ const FindCandidates = () => {
     
     setMessages(prev => [...prev, userMessage]);
     setLoading(true);
+    
+    // Clear previous results before new search
+    setResults([]);
+    setAiInsights("");
     
     // Immediately scroll to bottom after adding user message
     setTimeout(scrollToBottom, 50);
